@@ -5,6 +5,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Matrix
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.Log
 import android.util.Rational
 import android.util.Size
@@ -112,9 +114,34 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 })
         }
 
+
+        // Setup image analysis pipeline that computes average pixel luminance
+        val analyzerConfig = ImageAnalysisConfig.Builder().apply {
+            // Use a worker thread for image analysis to prevent glitches
+            val analyzerThread = HandlerThread(
+                "LuminosityAnalysis"
+            ).apply { start() }
+            setCallbackHandler(Handler(analyzerThread.looper))
+            // In our analysis, we care more about the latest image than
+            // analyzing *every* image
+            setImageReaderMode(
+                ImageAnalysis.ImageReaderMode.ACQUIRE_LATEST_IMAGE
+            )
+        }.build()
+
+        // Build the image analysis use case and instantiate our analyzer
+        val analyzerUseCase = ImageAnalysis(analyzerConfig).apply {
+            analyzer = ImageAnalyzer()
+        }
+
+
 //        CameraX.bindToLifecycle(this, preview)
-        CameraX.bindToLifecycle(this, preview, imageCapture)
+//        CameraX.bindToLifecycle(this, preview, imageCapture)
+
+        CameraX.bindToLifecycle(
+            this, preview, imageCapture, analyzerUseCase)
     }
+
 
     private fun updateTransform() {
         val matrix = Matrix()
