@@ -44,7 +44,8 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
             viewFinder.post { startCamera() }
         } else {
             ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+            )
         }
 
         // Every time the provided texture view changes, recompute layout
@@ -89,12 +90,16 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         // Build the image capture use case and attach button click listener
         val imageCapture = ImageCapture(imageCaptureConfig)
         capture_button.setOnClickListener {
-            val file = File(externalMediaDirs.first(),
-                "${System.currentTimeMillis()}.jpg")
+            val file = File(
+                externalMediaDirs.first(),
+                "${System.currentTimeMillis()}.jpg"
+            )
             imageCapture.takePicture(file,
                 object : ImageCapture.OnImageSavedListener {
-                    override fun onError(error: ImageCapture.UseCaseError,
-                                         message: String, exc: Throwable?) {
+                    override fun onError(
+                        error: ImageCapture.UseCaseError,
+                        message: String, exc: Throwable?
+                    ) {
                         val msg = "Photo capture failed: $message"
                         Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                         Log.e("CameraX Sample App", msg)
@@ -109,7 +114,8 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
                 })
         }
 
-        CameraX.bindToLifecycle(this, preview)
+//        CameraX.bindToLifecycle(this, preview)
+        CameraX.bindToLifecycle(this, preview, imageCapture)
     }
 
     private fun updateTransform() {
@@ -120,7 +126,7 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
         val centerY = viewFinder.height / 2f
 
         // Correct preview output to account for display rotation
-        val rotationDegrees = when(viewFinder.display.rotation) {
+        val rotationDegrees = when (viewFinder.display.rotation) {
             Surface.ROTATION_0 -> 0
             Surface.ROTATION_90 -> 90
             Surface.ROTATION_180 -> 180
@@ -139,7 +145,8 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
      * been granted? If yes, start Camera. Otherwise display a toast
      */
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
                 viewFinder.post { startCamera() }
@@ -156,7 +163,9 @@ class MainActivity : AppCompatActivity(), LifecycleOwner {
     private fun allPermissionsGranted(): Boolean {
         for (permission in REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(
-                    this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    this, permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 return false
             }
         }
