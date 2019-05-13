@@ -1,24 +1,22 @@
 package com.ankkumar.cameraxsampleapp
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import androidx.lifecycle.LifecycleOwner
-
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.util.Size
 import android.graphics.Matrix
+import android.os.Bundle
 import android.util.Log
 import android.util.Rational
+import android.util.Size
 import android.view.Surface
 import android.view.TextureView
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
